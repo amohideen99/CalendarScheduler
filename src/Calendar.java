@@ -9,13 +9,14 @@ import java.util.Date;
 public class Calendar {
 
 
-
+    Box horizontalBox;
     JFrame frame;
     JPanel inner;
     JPanel panel;
     JPanel outer;
     JLabel month;
     JButton nextMonth;
+    JButton prevMonth;
     LocalDate localDate;
 
 
@@ -23,10 +24,16 @@ public class Calendar {
 
         frame = new JFrame("Calendar");
 
-        outer = new JPanel(new BoxLayout(outer, BoxLayout.PAGE_AXIS));
+        outer = new JPanel();
+        outer.setLayout(new BoxLayout(outer, BoxLayout.PAGE_AXIS));
+
+        horizontalBox = Box.createHorizontalBox();
+        horizontalBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) horizontalBox.getMinimumSize().getHeight()));
+
+
 
         inner = new JPanel();
-        inner.setLayout(new BorderLayout());
+
 
         panel = new JPanel();
 
@@ -45,25 +52,44 @@ public class Calendar {
         month.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
-
-        nextMonth = new JButton();
+        nextMonth = new JButton("Next Month");
         nextMonth.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 LocalDate newDate = localDate.plusMonths(1);
                 initMonth(newDate);
+                month.setText(newDate.getMonth().toString());
                 localDate = newDate;
             }
         });
-        inner.add(month, BorderLayout.PAGE_START);
-        inner.add(nextMonth, BorderLayout.AFTER_LINE_ENDS);
 
-        outer.add(inner);
+        prevMonth = new JButton("Previous Month");
+        prevMonth.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                LocalDate newDate = localDate.plusMonths(-1);
+                initMonth(newDate);
+                month.setText(newDate.getMonth().toString());
+                localDate = newDate;
+
+            }
+        });
+        horizontalBox.add(Box.createHorizontalStrut(3));
+        horizontalBox.add(prevMonth);
+        horizontalBox.add(Box.createGlue());
+        horizontalBox.add(month);
+        horizontalBox.add(Box.createGlue());
+        horizontalBox.add(nextMonth);
+        horizontalBox.add(Box.createHorizontalStrut(3));
+
+
+        outer.add(horizontalBox);
         outer.add(panel);
 
+
         frame.add(outer);
-     //   frame.add(panel);
         frame.setMinimumSize(new Dimension(800, 500));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -81,7 +107,6 @@ public class Calendar {
         panel.revalidate();
         panel.repaint();
     }
-
 
 
     public static void main(String[] args) {
