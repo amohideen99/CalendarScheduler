@@ -12,6 +12,7 @@ public class EventDialog extends JFrame {
     SpinnerNumberModel year;
     JComboBox monthList;
     JComboBox daysList;
+    JComboBox timeList;
 
     public EventDialog(LocalDate localDate, int day) {
 
@@ -82,23 +83,29 @@ public class EventDialog extends JFrame {
         spinner.setEditor(editor);
         yearSet.add(spinner);
 
+        String[] times = new String[97];
+
+        for (int i = 0; i < 24; i++) {
+
+            for (int j = 0; j < 61; j += 15) {
+
+                times[(int) (i * (4) + (j / 15))] = String.valueOf(i) + ":" + String.valueOf(j);
+
+            }
+        }
+
+        timeList = new JComboBox(times);
 
         Box timeSet = Box.createHorizontalBox();
         timeSet.add(Box.createHorizontalStrut(3));
         timeSet.add(new JLabel("Time: "));
         timeSet.add(Box.createGlue());
+        timeSet.add(timeList);
 
-        SpinnerDateModel model = new SpinnerDateModel();
-        // model.setValue(localDate.get());
 
-        JSpinner timer = new JSpinner(model);
-        //  timer.setValue(0);
-        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spinner, "HH:mm:ss");
-        DateFormatter formatter = (DateFormatter) dateEditor.getTextField().getFormatter();
-        formatter.setAllowsInvalid(false); // this makes what you want
-        formatter.setOverwriteMode(true);
 
-        timer.setEditor(dateEditor);
+
+
 
 
         layout.setVgap(10);
@@ -106,7 +113,7 @@ public class EventDialog extends JFrame {
         panel.add(monthSet);
         panel.add(daySet);
         panel.add(yearSet);
-        panel.add(timer);
+        panel.add(timeSet);
 
 
         setTitle("Create New Event");
