@@ -246,7 +246,7 @@ public class EventDialog extends JFrame {
                 updateEvent(index);
             }
         });
-        System.out.println("Event Dialog(event)");
+
     }
 
     protected void createEvent(LocalDate localDate) {

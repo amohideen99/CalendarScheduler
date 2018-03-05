@@ -17,6 +17,7 @@ public class Calendar {
     JMenuBar menuBar;
     JMenu edit;
     JMenuItem addUser;
+    JMenuItem viewUsers;
     Box horizontalBox;
     JFrame frame;
     JPanel inner;
@@ -53,6 +54,37 @@ public class Calendar {
         });
         edit.add(addUser);
         menuBar.add(edit);
+
+        viewUsers = new JMenuItem("View Users...");
+        viewUsers.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                JFrame usersList = new JFrame("User Accounts");
+                JPanel userPanel = new JPanel();
+                userPanel.setLayout(new GridLayout(0, 1, 3, 10));
+
+                for (int i = 0; i < users.size(); i++) {
+
+                    Box box = Box.createHorizontalBox();
+                    box.add(Box.createHorizontalStrut(3));
+                    // box.add(Box.createGlue());
+                    box.add(new JLabel(String.valueOf(i + 1) + ") " + users.get(i).getName() + " - " + users.get(i).getPermissions()));
+                    box.add(Box.createGlue());
+                    box.add(Box.createHorizontalStrut(3));
+                    userPanel.add(box);
+                }
+
+                usersList.add(userPanel);
+                usersList.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                usersList.setVisible(true);
+
+                //usersList.pack();
+                usersList.setMinimumSize(usersList.getPreferredSize());
+                usersList.setMaximumSize(usersList.getPreferredSize());
+            }
+        });
+        edit.add(viewUsers);
 
         horizontalBox = Box.createHorizontalBox();
         horizontalBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) horizontalBox.getMinimumSize().getHeight()));
@@ -125,8 +157,8 @@ public class Calendar {
                 BufferedWriter writerUser = null;
                 BufferedWriter writeEvents = null;
                 try {
-                    writerUser = new BufferedWriter(new FileWriter("src/Users.txt", false));
-                    writeEvents = new BufferedWriter(new FileWriter("src/Events.txt", false));
+                    writerUser = new BufferedWriter(new FileWriter("Users.txt", false));
+                    writeEvents = new BufferedWriter(new FileWriter("Events.txt", false));
 
 
                     for (int i = 0; i < users.size(); i++) {
@@ -176,7 +208,7 @@ public class Calendar {
         ArrayList<Event> tempEvents = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src/Events.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("Events.txt"));
 
 
             String line;

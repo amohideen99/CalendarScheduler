@@ -84,12 +84,20 @@ public class Day extends JPanel implements MouseListener {
                         @Override
                         public void mouseClicked(MouseEvent e) {
 
+                            if (e.getButton() == MouseEvent.BUTTON3) {
+
+                                events.remove(num);
+                                Calendar.initMonth(user, localDate);
+                            } else {
+
+                                new EventDialog(currentLogin, num);
+                            }
                         }
 
                         @Override
                         public void mousePressed(MouseEvent e) {
 
-                            new EventDialog(currentLogin, num);
+
                         }
 
                         @Override

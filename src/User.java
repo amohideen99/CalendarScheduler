@@ -62,6 +62,28 @@ public class User {
         return getName();
     }
 
+    public String getPermissions() {
+
+        StringBuilder toReturn = new StringBuilder();
+
+        if (isParent()) {
+
+            toReturn.append("Parent");
+        }
+
+        if (isDriver()) {
+
+            toReturn.append(", Driver");
+        }
+
+        if (!isParent() && !isDriver()) {
+
+            toReturn.append("Child");
+        }
+
+        return toReturn.toString();
+    }
+
     public Color getColor() {
 
         return Preferred;

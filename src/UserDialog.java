@@ -181,7 +181,7 @@ public class UserDialog extends JFrame {
     protected void writeUser(User user)
             throws IOException {
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("src/Users.txt", true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("Users.txt", true));
 
         writer.append(user.toSaveLine() + "\n");
 

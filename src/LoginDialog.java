@@ -105,7 +105,7 @@ public class LoginDialog extends JFrame {
 
         try {
 
-            BufferedReader reader = new BufferedReader(new FileReader("src/Users.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("Users.txt"));
 
             String line;// = reader.readLine();
 
