@@ -20,6 +20,38 @@ public class User {
 
     }
 
+    public User(String line) {
+
+        String[] parts = line.split(":");
+
+        Parent = Boolean.parseBoolean(parts[0]);
+        Driver = Boolean.parseBoolean(parts[1]);
+        Name = parts[2];
+        Phone = parts[3];
+        Password = parts[4];
+        Preferred = Color.decode(parts[5]);
+
+    }
+
+    public boolean isParent() {
+
+        return Parent;
+    }
+
+    public String getPassword() {
+
+        return Password;
+    }
+
+    public String getName() {
+
+        return Name;
+    }
+
+    public String getPhone() {
+
+        return Phone;
+    }
     public boolean isDriver() {
 
         return Driver;
@@ -27,12 +59,18 @@ public class User {
 
     public String toString() {
 
-        return Name;
+        return getName();
     }
 
     public Color getColor() {
 
         return Preferred;
+    }
+
+    public String toSaveLine() {
+
+        String toReturn = String.valueOf(isParent()) + ":" + String.valueOf(isDriver()) + ":" + getName() + ":" + getPhone() + ":" + getPassword() + ":" + getColor().getRGB();
+        return toReturn;
     }
 
 

@@ -2,8 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -26,13 +30,13 @@ public class Calendar {
     static ArrayList<User> drivers;
     static ArrayList<Event> events;
 
-    public Calendar() {
+    public Calendar(User perspective, ArrayList<User> userArrayList) {
 
-        users = new ArrayList<>();
-        drivers = new ArrayList<>();
-        events = new ArrayList<>();
+        users = userArrayList;
+        drivers = populateDriverList(userArrayList);
+        events = populateEventList();
 
-        frame = new JFrame("Calendar");
+        frame = new JFrame("Calendar - " + perspective.getName());
 
         outer = new JPanel();
         outer.setLayout(new BoxLayout(outer, BoxLayout.PAGE_AXIS));
@@ -49,7 +53,6 @@ public class Calendar {
         });
         edit.add(addUser);
         menuBar.add(edit);
-
 
         horizontalBox = Box.createHorizontalBox();
         horizontalBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) horizontalBox.getMinimumSize().getHeight()));
@@ -68,7 +71,7 @@ public class Calendar {
         Date date = new Date();
         localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        initMonth(localDate);
+        initMonth(perspective, localDate);
 
         month = new JLabel(localDate.getMonth().toString());
         month.setFont(new Font(Font.SERIF, Font.BOLD, 30));
@@ -81,7 +84,7 @@ public class Calendar {
             public void actionPerformed(ActionEvent e) {
 
                 LocalDate newDate = localDate.plusMonths(1);
-                initMonth(newDate);
+                initMonth(perspective, newDate);
                 month.setText(newDate.getMonth().toString());
                 localDate = newDate;
             }
@@ -93,7 +96,7 @@ public class Calendar {
             public void actionPerformed(ActionEvent e) {
 
                 LocalDate newDate = localDate.plusMonths(-1);
-                initMonth(newDate);
+                initMonth(perspective, newDate);
                 month.setText(newDate.getMonth().toString());
                 localDate = newDate;
 
@@ -114,8 +117,91 @@ public class Calendar {
         frame.setJMenuBar(menuBar);
         frame.add(outer);
         frame.setMinimumSize(new Dimension(1200, 800));
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+
+                BufferedWriter writerUser = null;
+                BufferedWriter writeEvents = null;
+                try {
+                    writerUser = new BufferedWriter(new FileWriter("Users.txt", false));
+                    writeEvents = new BufferedWriter(new FileWriter("Events.txt", false));
+
+
+                    for (int i = 0; i < users.size(); i++) {
+
+                        writerUser.append(users.get(i).toSaveLine() + "\n");
+                    }
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+                    for (int i = 0; i < events.size(); i++) {
+
+
+                        writeEvents.append(events.get(i).getName() + "," + events.get(i).getDateTime().format(formatter) + "," + events.get(i).getLocation() + ",#" + events.get(i).getResponsibility().toSaveLine() + "#" + events.get(i).getRecipient().toSaveLine() + "\n");
+                    }
+
+
+                    writerUser.close();
+                    writeEvents.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
+
+        });
         frame.setVisible(true);
+    }
+
+    protected ArrayList<User> populateDriverList(ArrayList<User> users) {
+
+        ArrayList<User> tempDrivers = new ArrayList<>();
+
+        for (int i = 0; i < users.size(); i++) {
+
+            if (users.get(i).isDriver()) {
+
+                tempDrivers.add(users.get(i));
+            }
+        }
+
+        return tempDrivers;
+    }
+
+    protected ArrayList<Event> populateEventList() {
+
+        ArrayList<Event> tempEvents = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("Events.txt"));
+
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                if (!line.equals("")) {
+
+                    String[] parts = line.split(",");
+                    String[] userParts = line.split("#");
+
+                    tempEvents.add(new Event(parts[0], LocalDateTime.parse(parts[1], formatter), parts[2], new User(userParts[1]), new User(userParts[2])));
+                }
+            }
+        } catch (FileNotFoundException e) {
+
+            return tempEvents;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return tempEvents;
+
+
     }
 
     public static void addUser(User newUser) {
@@ -178,25 +264,17 @@ public class Calendar {
     }
 
 
-    public static void initMonth(LocalDate date) {
+    public static void initMonth(User user, LocalDate date) {
 
         panel.removeAll();
 
         for (int i = 1; i < date.lengthOfMonth() + 1; i++) {
 
-            panel.add(new Day(date, i, events));
+            panel.add(new Day(user, date, i, events));
         }
 
         panel.revalidate();
         panel.repaint();
-    }
-
-
-    public static void main(String[] args) {
-
-        new Calendar();
-
-
     }
 
 

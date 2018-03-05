@@ -23,9 +23,11 @@ public class EventDialog extends JFrame {
     JTextField locationField;
     JButton apply;
     String[] times = new String[97];
+    User currentLogin;
 
-    public EventDialog(LocalDate localDate, int day) {
+    public EventDialog(User user, LocalDate localDate, int day) {
 
+        currentLogin = user;
         setBackground(Color.BLACK);
 
         GridLayout layout = new GridLayout(9, 1);
@@ -202,9 +204,9 @@ public class EventDialog extends JFrame {
     }
 
 
-    public EventDialog(int index) {
+    public EventDialog(User user, int index) {
 
-        this(Calendar.events.get(index).getDateTime().toLocalDate(), Calendar.events.get(index).getDateTime().getDayOfMonth());
+        this(user, Calendar.events.get(index).getDateTime().toLocalDate(), Calendar.events.get(index).getDateTime().getDayOfMonth());
 
         setTitle("Edit Event");
         eventName.setText(Calendar.events.get(index).getName());
@@ -260,7 +262,7 @@ public class EventDialog extends JFrame {
             System.out.println(Integer.valueOf(timeString.substring(0, 2)));
         } else {
 
-            time = LocalTime.of(12 + Integer.valueOf(timeString.substring(0, 2)), Integer.valueOf(timeString.substring(3, 5)));
+            time = LocalTime.of((12 + Integer.valueOf(timeString.substring(0, 2))) % 24, Integer.valueOf(timeString.substring(3, 5)));
             System.out.println(2 * Integer.valueOf(timeString.substring(0, 2)));
         }
 
@@ -270,7 +272,7 @@ public class EventDialog extends JFrame {
 
 
         Calendar.addEvent(new Event(name, dateTime, location, Calendar.drivers.get(driverList.getSelectedIndex()), Calendar.users.get(recipientList.getSelectedIndex())));
-        Calendar.initMonth(Calendar.localDate);
+        Calendar.initMonth(currentLogin, Calendar.localDate);
         dispose();
     }
 
@@ -286,7 +288,7 @@ public class EventDialog extends JFrame {
 
         } else {
 
-            time = LocalTime.of(12 + Integer.valueOf(timeString.substring(0, 2)), Integer.valueOf(timeString.substring(3, 5)));
+            time = LocalTime.of((12 + Integer.valueOf(timeString.substring(0, 2))) % 24, Integer.valueOf(timeString.substring(3, 5)));
 
         }
 
@@ -296,7 +298,7 @@ public class EventDialog extends JFrame {
 
 
         Calendar.events.set(index, new Event(name, dateTime, location, Calendar.drivers.get(driverList.getSelectedIndex()), Calendar.users.get(recipientList.getSelectedIndex())));
-        Calendar.initMonth(Calendar.localDate);
+        Calendar.initMonth(currentLogin, Calendar.localDate);
         dispose();
     }
 }

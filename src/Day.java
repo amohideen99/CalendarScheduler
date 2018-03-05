@@ -13,7 +13,6 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class Day extends JPanel implements MouseListener {
 
-    JPanel south;
     Color background;
     Color foreground;
     JLabel date;
@@ -22,9 +21,11 @@ public class Day extends JPanel implements MouseListener {
     int dayNum;
     ArrayList<Event> events;
     Box dateBox;
+    User currentLogin;
 
-    public Day(LocalDate localdate, int day, ArrayList<Event> list) {
+    public Day(User user, LocalDate localdate, int day, ArrayList<Event> list) {
 
+        currentLogin = user;
         background = Color.WHITE;
         foreground = Color.BLACK;
         blackline = BorderFactory.createLineBorder(Color.black);
@@ -34,11 +35,11 @@ public class Day extends JPanel implements MouseListener {
         events = list;
         dateBox = Box.createHorizontalBox();
 
-        populateEvent();
+        populateEvents(user);
     }
 
 
-    public void populateEvent() {
+    public void populateEvents(User user) {
 
         GridLayout layout = new GridLayout(5, 1);
 
@@ -60,54 +61,58 @@ public class Day extends JPanel implements MouseListener {
 
             if (events.get(i).getDateTime().toLocalDate().equals(localDate)) {
 
-                String result = LocalTime.parse(events.get(i).getDateTime().toLocalTime().toString(), DateTimeFormatter.ofPattern("HH:mm")).format(DateTimeFormatter.ofPattern("hh:mm a"));
 
-                int num = i;
-                Box event = Box.createHorizontalBox();
-                event.setOpaque(true);
+                if (user.isParent() || user.getName().equals(events.get(i).getRecipient().getName())) {
 
-                Color chosenColor = events.get(i).getRecipient().getColor();
-                event.setBackground(chosenColor);
-                event.add(Box.createGlue());
+                    String result = LocalTime.parse(events.get(i).getDateTime().toLocalTime().toString(), DateTimeFormatter.ofPattern("HH:mm")).format(DateTimeFormatter.ofPattern("hh:mm a"));
 
-                JLabel eventBlurb = new JLabel(events.get(i).Name + " - " + result);
-                eventBlurb.setForeground(Color.WHITE);
+                    int num = i;
+                    Box event = Box.createHorizontalBox();
+                    event.setOpaque(true);
 
-                event.add(eventBlurb);
-                event.add(Box.createGlue());
+                    Color chosenColor = events.get(i).getRecipient().getColor();
+                    event.setBackground(chosenColor);
+                    event.add(Box.createGlue());
 
-                event.addMouseListener(new MouseListener() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
+                    JLabel eventBlurb = new JLabel(events.get(i).Name + " - " + result);
+                    eventBlurb.setForeground(Color.WHITE);
 
-                    }
+                    event.add(eventBlurb);
+                    event.add(Box.createGlue());
 
-                    @Override
-                    public void mousePressed(MouseEvent e) {
+                    event.addMouseListener(new MouseListener() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
 
-                        new EventDialog(num);
-                    }
+                        }
 
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
+                        @Override
+                        public void mousePressed(MouseEvent e) {
 
-                    }
+                            new EventDialog(currentLogin, num);
+                        }
 
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
 
-                        event.setBackground(Color.BLACK);
-                    }
+                        }
 
-                    @Override
-                    public void mouseExited(MouseEvent e) {
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
 
-                        event.setBackground(chosenColor);
-                    }
-                });
+                            event.setBackground(Color.BLACK);
+                        }
 
-                add(event);
+                        @Override
+                        public void mouseExited(MouseEvent e) {
 
+                            event.setBackground(chosenColor);
+                        }
+                    });
+
+                    add(event);
+
+                }
             }
         }
     }
@@ -116,7 +121,7 @@ public class Day extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        new EventDialog(localDate, dayNum);
+        new EventDialog(currentLogin, localDate, dayNum);
     }
 
     @Override
