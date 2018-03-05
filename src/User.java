@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class User {
 
     boolean Parent;
@@ -5,17 +7,32 @@ public class User {
     String Name;
     String Phone;
     String Password;
-    int BufferTime;             //time to travel - place between events in minutes
+    Color Preferred;
 
-    public User(boolean parent, boolean driver, String name, String phone, String password, int buffer) {
+    public User(boolean parent, boolean driver, String name, String phone, String password, Color preferred) {
 
         Parent = parent;
         Driver = driver;
         Name = name;
         Phone = phone;
         Password = password;
-        BufferTime = buffer;
+        Preferred = preferred;
 
+    }
+
+    public boolean isDriver() {
+
+        return Driver;
+    }
+
+    public String toString() {
+
+        return Name;
+    }
+
+    public Color getColor() {
+
+        return Preferred;
     }
 
 

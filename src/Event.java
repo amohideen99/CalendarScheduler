@@ -7,29 +7,32 @@ public class Event {
     String Location;
     User Responsibility;
     User Recipient;
-    int EventNum;
     boolean Existince;
     String Description;
 
-    public Event(String name, LocalDateTime time, String location, User responsibility, User recipient, int eventNum){
+    public Event(String name, LocalDateTime time, String location, User responsibility, User recipient) {
 
         Name = name;
         Time = time;
         Location = location;
         Responsibility = responsibility;
         Recipient = recipient;
-        EventNum = eventNum;
         Existince = true;
     }
 
-    public void setTime(LocalDateTime time){
+    public void setDateTime(LocalDateTime time) {
 
         Time = time;
     }
 
-    public LocalDateTime getTime(){
+    public LocalDateTime getDateTime() {
 
         return Time;
+    }
+
+    public String getName() {
+
+        return Name;
     }
 
     public void setLocation(String location){
@@ -57,10 +60,6 @@ public class Event {
         Existince = false;
     }
 
-    public int getEventNum(){
-
-        return EventNum;
-    }
 
     public void setDescription(String string){
 
@@ -71,5 +70,12 @@ public class Event {
 
         return Description;
     }
+
+    public User getRecipient() {
+
+        return Recipient;
+    }
+
+
 
 }
