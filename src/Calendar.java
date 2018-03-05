@@ -125,8 +125,8 @@ public class Calendar {
                 BufferedWriter writerUser = null;
                 BufferedWriter writeEvents = null;
                 try {
-                    writerUser = new BufferedWriter(new FileWriter("Users.txt", false));
-                    writeEvents = new BufferedWriter(new FileWriter("Events.txt", false));
+                    writerUser = new BufferedWriter(new FileWriter("src/Users.txt", false));
+                    writeEvents = new BufferedWriter(new FileWriter("src/Events.txt", false));
 
 
                     for (int i = 0; i < users.size(); i++) {
@@ -176,7 +176,7 @@ public class Calendar {
         ArrayList<Event> tempEvents = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("Events.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("src/Events.txt"));
 
 
             String line;

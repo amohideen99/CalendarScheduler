@@ -12,7 +12,7 @@ public class LoginDialog extends JFrame {
 
     JPanel panel;
     JTextField userField;
-    JTextField passField;
+    JPasswordField passField;
     JButton login;
     JButton createAccount;
 
@@ -25,7 +25,8 @@ public class LoginDialog extends JFrame {
         panel.setLayout(layout);
 
         userField = new JTextField();
-        passField = new JTextField();
+        passField = new JPasswordField();
+
         login = new JButton("Login");
         createAccount = new JButton("Create Account");
 
@@ -104,7 +105,7 @@ public class LoginDialog extends JFrame {
 
         try {
 
-            BufferedReader reader = new BufferedReader(new FileReader("Users.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("src/Users.txt"));
 
             String line;// = reader.readLine();
 
